@@ -1,0 +1,66 @@
+{
+    "name": "editor",
+    "version": "1.0.0",
+    "description": "a editor text",
+    "main": "src/main.js",
+    "scripts": {
+        "start": "electron . dev",
+        "buildwin": "electron-builder --win --x64",
+        "buildlinux": "electron-builder --linux"
+    },
+    "build": {
+        "publish": [
+            {
+                "provider": "generic",
+                "url": "http://127.0.0.1:8080/"
+            }
+        ],
+        "appId": "com.watch",
+        "directories": {
+            "app": "./"
+        },
+        "productName": "watchfile",
+        "dmg": {
+            "icon": "./assets/b.icns",
+            "window": {
+                "x": "150",
+                "y": "150",
+                "width": "150",
+                "height": "200"
+            }
+        },
+        "mac": {
+            "icon": "./assets/b.icns"
+        },
+        "win": {
+            "icon": "./assets/a.png"
+        },
+        "linux": {
+            "icon": "./assets/a.png"
+        },
+        "nsis": {
+            "oneClick": false,
+            "perMachine": false,
+            "allowElevation": true,
+            "createDesktopShortcut": true,
+            "runAfterFinish": true,
+            "installerIcon": "./assets/c.ico",
+            "uninstallerIcon": "./assets/c.ico",
+            "include": "script/installer.nsh",
+            "allowToChangeInstallationDirectory": true
+        }
+    },
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "electron": "^4.1.3",
+        "electron-builder": "^20.39.0",
+        "webpack": "^4.29.6",
+        "webpack-cli": "^3.3.0"
+    },
+    "dependencies": {
+        "electron-updater": "^4.0.6",
+        "gaze": "^1.1.3"
+    },
+    "comment": "electron-updater 必须安装在运行依赖项中"
+}
