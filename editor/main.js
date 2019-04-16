@@ -4,11 +4,13 @@ const {
     ipcMain
 } = require("electron");
 require("./src/main/appmenum.js");
+let exec = require('child_process').exec
 let checkForUpdates = require("./src/main/update.js");
+let download = require("./src/main/download");
 let argv = process.argv;
 // 保持对window对象的全局引用，如果不这么做的话，当JavaScript对象被
 // 垃圾回收的时候，window对象将会自动的关闭
-let win;
+let win, webContents;
 let safeExit = false;
 
 function createWindow() {
@@ -17,9 +19,9 @@ function createWindow() {
         width: 800,
         height: 600
     });
-
+    webContents = win.webContents;
     // 然后加载应用的 index.html。
-    win.loadURL(`file://${__dirname}/src/index.html`)
+    win.loadURL(`file://${__dirname}/src/render/index.html`);
 
     // 打开开发者工具
     if (argv.includes('dev')) {
@@ -39,6 +41,7 @@ function createWindow() {
         // 与此同时，你应该删除相应的元素。
         win = null;
     });
+    download(webContents);
 }
 
 // Electron 会在初始化后并准备
@@ -69,8 +72,15 @@ ipcMain.on("reqaction", (event, arg) => {
             safeExit = true;
             app.quit();
             break;
-        case "start":
-            break;
+        case "exe":
+               exec("npm start",{cwd:"/home/yt00785/nodeproject/watchFile"}, (err, stdout, stderr)=>{
+                    console.log(err);
+                    console.log("------------------");
+                    console.log(stdout);
+                    console.log("------------------");
+                    console.log(stderr);
+               });
+            break
     }
 });
 
@@ -79,4 +89,6 @@ ipcMain.on('update', (e, arg) => {
         checkForUpdates(win);
     }
 });
+
 require("./src/main/watch");
+require("./src/main/receives");

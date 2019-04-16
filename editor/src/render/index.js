@@ -7,7 +7,7 @@ const {
     MenuItem,
     dialog
 } = remote;
-
+const fs = require('fs');
 let currentFile = null;
 let isSaved = true;
 let txtEditor = document.getElementById('txtEditor');
@@ -109,12 +109,10 @@ function openFile() {
 };
 
 function readText(file) {
-    const fs = require('fs');
     return fs.readFileSync(file, 'utf-8');
 };
 
 function saveText() {
-    const fs = require('fs');
     fs.writeFileSync(file, text);
 };
 
@@ -180,5 +178,7 @@ function defaultFontSize() {
 }
 
 window.onload = function () {
-    ipcRenderer.send('update');
+    //ipcRenderer.send('update');
+    //ipcRenderer.send('download' );
+    //ipcRenderer.send('reqaction', 'exe');
 }

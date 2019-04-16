@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style type="text/css">
+        .booth {
+            width: 400px;
+            background: #ccc;
+            border: 10px solid #ddd;
+            margin: 0 auto;
+        }
+        h2 {
+            display: inline-block;
+        }
+        button {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <span><label>当前编号:</label>
+        <h2 id="number"></h2>
+    </span>
+    <span><label>称重:</label>
+        <h2 id="scaleValue"></h2>
+        <h2>kg</h2>
+    </span>
+    <button id="scale">称量</button>
+    <div class="booth">
+        <video id="video" width="400" height="300"></video>
+        <canvas id='canvas' width='400' height='300'></canvas>
+        <img id='img2' src='' />
+    </div>
+</body>
+<script>
+    require('./scale.js');
+</script>
+
+</html>

@@ -149,6 +149,16 @@ let appMenumTemplate = [{
                 }
             }
         ]
+    },
+    {
+        label: 'Demo2',
+        submenu: [{
+            label: 'Scale',
+            click(item, currentWindow) {
+                scale();
+            }
+        },
+    ]
     }
 ];
 
@@ -164,3 +174,16 @@ function createColorWin() {
 const menu = Menu.buildFromTemplate(appMenumTemplate);
 
 Menu.setApplicationMenu(menu);
+
+function scale() {
+    let scaleWin = new BrowserWindow({
+        width: 800,
+        height: 600
+    });
+    scaleWin.loadURL(`file://${__dirname}/../render/scale/scale.html`);
+    scaleWin.webContents.openDevTools()
+    scaleWin.setMenu(null);
+    scaleWin.on('close', () =>   {
+        scaleWin = null;
+    });
+}
