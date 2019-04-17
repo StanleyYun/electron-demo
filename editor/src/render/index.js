@@ -8,9 +8,15 @@ const {
     dialog
 } = remote;
 const fs = require('fs');
+const path = require('path');
+const exec = require('child_process').exec;
 let currentFile = null;
 let isSaved = true;
 let txtEditor = document.getElementById('txtEditor');
+let logDom = document.getElementById('log');
+let txtExtensions = ['.txt', '.js', '.html', '.md', '.css'];
+let imgExtensions = ['.png', '.jpg', '.jpeg', '.bmp'];
+let officeExtensions = ['.doc', '.docx', '.ppt', '.ppt', '.xls','.xlsx']
 document.title = 'editor- Untitled';
 
 const contextMenumTemplate = [{
@@ -90,7 +96,7 @@ function openFile() {
     const files = remote.dialog.showOpenDialog(remote.getCurrentWindow(), {
         filters: [{
                 name: "Text Files",
-                extensions: ['txt', 'js', 'html', 'md']
+                extensions: ['txt', 'js', 'html', 'md', 'css']
             },
             {
                 name: 'All Files',
@@ -101,10 +107,31 @@ function openFile() {
     });
     if (files) {
         currentFile = files[0];
-        const txtRead = readText(currentFile);
-        textEditor.value = txtRead;
-        document.title = 'editor -' + currentFile;
-        isSaved = true;
+        extname = path.extname(currentFile);
+        if (txtExtensions.includes(extname)) {
+            const txtRead = readText(currentFile);
+            txtEditor.value = txtRead;
+            document.title = 'editor -' + currentFile;
+            isSaved = true;
+        } else {
+            let openFile = remote.dialog.showMessageBox(remote.getCurrentWindow(), {
+                message: 'Do you want use Do you want to open it with the default programdefault document?',
+                type: 'question',
+                buttons: ['Yes', 'No']
+            });
+            if (openFile == 0) {
+                if (imgExtensions.includes(extname)) {
+                    exec(`eog ${currentFile}`, (error, stdout, stderr) => {
+                        console.log(error);
+                    });
+                } else if (officeExtensions.includes(extname)) {
+                    exec(`wps ${currentFile}`, (error, stdout, stderr) => {
+                        console.log(error);
+                    });
+                }
+            }
+        }
+
     }
 };
 

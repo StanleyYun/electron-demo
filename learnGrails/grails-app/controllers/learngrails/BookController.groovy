@@ -50,8 +50,24 @@ class BookController {
     }
 
     def upload(String file, String filename, String event){
-        //ef lfile = new File('./a.txt');
-        if (event != 'deleted') {
+        if (event == 'deleted' && filename != null && filename != '') {
+            File dFile = new File('upload/' + filename);
+            if(dFile.exists()) {
+                dFile.delete();
+            }
+
+        } else if (event == 'renamed' && filename != null && filename != '' && oldname != null && oldname != '' ){
+            File rFile = new File('upload/' + oldname );
+            if (!rFile.isFile()) {
+                try {
+                    rFile.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            rFile.renameTo(new File('upload/' + filename ));
+
+        } else if (file != null && filename != null && filename != '' ){
             byte[] buffer = new BASE64Decoder().decodeBuffer(file);
             for(int i=0;i<buffer.length;++i)
             {
@@ -63,13 +79,8 @@ class BookController {
             FileOutputStream out = new FileOutputStream('upload/' + filename);
             out.write(buffer);
             out.close();
-        } else {
-            File dFile = new File('upload/' + filename);
-            if(dFile.exists()) {
-                dFile.delete();
-            }
         }
-        render status:ACCEPTED, text:'success'
+        render status:OK, text:'success'
         return ;
     }
 

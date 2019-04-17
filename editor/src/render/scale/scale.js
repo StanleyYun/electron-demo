@@ -1,6 +1,7 @@
 //const images =  require("images");
 const fs = require("fs");
 const queryString = require('querystring');
+const http = require('http');
 let number;
 let scaleVal;
 let buttonDom = document.getElementById("scale");
@@ -40,6 +41,7 @@ function randomNum() {
 function watchCOM() {
     var SerialPort = require("serialport").SerialPort; //引入模块
     var portName = 'COM3'; //定义串口名
+    let errorCOM;
     var serialPort = new SerialPort(
         "COM3", {
             baudRate: 9600, //波特率
@@ -51,19 +53,22 @@ function watchCOM() {
 
     serialPort.open(function (error) {
         if (error) {
+            errorCOM = error
             console.log("打开端口" + portName + "错误：" + error);
         } else {
             console.log("打开端口成功，正在监听数据中");
             serialPort.on('data', function (data) {
-                console.log(data);
-            })
+                console.log(data.toString());
+            });
         }
     });
+    
 }
 
 buttonDom.addEventListener('click', () => {
     scale("start", function () {
         upload(scaleVal, number);
+        playonline('./9605.mp3')
     });
     //image();
 });
@@ -87,9 +92,7 @@ navigator.getMedia({
     video: true, //使用摄像头对象
     audio: false //不适用音频
 }, function (strem) {
-    console.log(strem);
     video.src = vendorUrl.createObjectURL(strem);
-    console.log(video);
     video.autoplay = true;
 }, function (error) {
     //error.code
@@ -104,7 +107,6 @@ function compressPicture(blob) {
     canvas.width = 400;
     canvas.height = 300;
     ctx.drawImage(blob, 0, 0, 400, 300);
-    // 生成base64,兼容修复移动设备需要引入mobileBUGFix.js
     var imgurl = canvas.toDataURL('image/png', quality);
     img2.src = imgurl;
     saveImg(imgurl, 'min');
@@ -119,10 +121,10 @@ function saveImg(data, fileName) {
     //upload(base64Data);
 }
 
-function upload(file) {
+function uploadfile(file) {
     let JsonData = queryString.stringify({
-        event,
-        filename,
+       // event,
+       // filename,
         file
     });
 
@@ -140,6 +142,12 @@ function upload(file) {
     });
     req.write(JsonData);
     req.end();
+}
+
+function playonline(url){  
+    let audio = document.createElement("AUDIO");
+    audio.src=url;
+    audio.play();
 }
 
 function image() {
